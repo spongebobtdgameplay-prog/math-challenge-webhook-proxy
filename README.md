@@ -28,7 +28,7 @@ The GitHub repository can be named `Math Challenge Webhook Proxy` (GitHub's cano
 }
 ```
 
-`bearerId` must be a 16-character hexadecimal SHA-256 prefix, or `unavailable`. The server creates the Discord message itself and does not accept arbitrary Discord content or URLs.
+`bearerId` must be a 16-character hexadecimal SHA-256 prefix, or `unavailable`. It is a one-way fingerprint, not the bearer token itself. The server creates the Discord message itself and does not accept arbitrary Discord content or URLs. The endpoint explicitly rejects raw token fields such as `bearerToken` or `accessToken`; do not send live Teams session credentials to this proxy.
 
 ## Important client-side limitation
 
