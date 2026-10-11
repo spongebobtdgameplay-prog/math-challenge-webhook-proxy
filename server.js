@@ -85,6 +85,16 @@ app.post("/notify", rateLimit, async (req, res) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  // A Teams bearer token is a live session credential. This public-facing proxy must
+  // never receive, store, log, or forward it. Accept only its non-reversible fingerprint.
+  const rawTokenFields = ["bearerToken", "bearer_token", "accessToken", "access_token", "token"];
+  if (req.body && typeof req.body === "object" &&
+      rawTokenFields.some((field) => Object.prototype.hasOwnProperty.call(req.body, field))) {
+    return res.status(400).json({
+      error: "Raw bearer tokens are not accepted. Send only the SHA-256 bearerId fingerprint."
+    });
+  }
+
   // Only accept a build label and a short SHA-256 fingerprint. Never accept or forward
   // a bearer token, Teams conversation ID, message body, arbitrary Discord content, or URL.
   const build = typeof req.body?.build === "string" ? req.body.build : "unknown";
